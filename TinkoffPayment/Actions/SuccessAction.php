@@ -14,7 +14,7 @@ class SuccessAction extends CatalogAction
         ];
         $data = array_merge($default, $this->request->getQueryParams());
 
-        $this->logger->debug('TinkoffPayment: check', ['data' => $data]);
+        // $this->logger->debug('TinkoffPayment: check', ['data' => $data]);
 
         $order = $this->catalogOrderService->read(['serial' => $data['serial']]);
 
