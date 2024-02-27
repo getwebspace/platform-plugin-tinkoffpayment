@@ -119,6 +119,7 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
                     'Quantity' => round($product->getCount(), 2),
                     'Amount' => intval($product->getTotal() * 100),
                     'PaymentMethod' => 'full_payment',
+                    'Tax' => 'none',
                 ];
             }
         }
@@ -135,7 +136,11 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
             'Receipt' => $receipt,
         ]));
 
-        return $result ?: null;
+        if ($result && ($result['Success'] === true || $result['ErrorCode'] === '0')) {
+            return $result['PaymentURL'];
+        }
+
+        return null;
     }
 
     public function getToken(array $data): string
@@ -161,6 +166,10 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
         $url = "{$url}{$method}";
 
         $result = @file_get_contents($url, false, stream_context_create([
+            'ssl' => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ],
             'http' => [
                 'method' => 'POST',
                 'header' => 'Content-type: application/json',
@@ -169,8 +178,8 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
             ],
         ]));
 
-        $this->logger->debug('TinkoffPayment: request', ['url' => $url, 'data' => $data]);
-        $this->logger->debug('TinkoffPayment: response', ['headers' => $http_response_header, 'response' => $result]);
+        // $this->logger->debug('TinkoffPayment: request', ['url' => $url, 'data' => $data]);
+        // $this->logger->debug('TinkoffPayment: response', ['headers' => $http_response_header, 'response' => $result]);
 
         if ($result) {
             return json_decode($result, true);
