@@ -14,7 +14,7 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
     const NAME = 'TinkoffPaymentPlugin';
     const TITLE = 'TinkoffPayment';
     const DESCRIPTION = 'Возможность принимать безналичную оплату товаров и услуг';
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     public function __construct(ContainerInterface $container)
     {
@@ -91,7 +91,7 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
 
     public function getRedirectURL(Order $order): ?string
     {
-        $this->logger->debug('TinkoffPayment: register order', ['serial' => $order->getSerial()]);
+        // $this->logger->debug('TinkoffPayment: register order', ['serial' => $order->getSerial()]);
 
         $data = [
             'TerminalKey' => $this->parameter('TinkoffPaymentPlugin_login'),

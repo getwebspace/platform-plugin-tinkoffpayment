@@ -29,7 +29,7 @@ class SuccessAction extends CatalogAction
             $data['Token'] = $tp->getToken($data);
             $result = $tp->request('CheckOrder', $data);
 
-            if ($result && ($result['Success'] === true || $result['ErrorCode'] === '0')) {
+            if ($result && ($result['Success'] === true || $result['ErrorCode'] === '0') && (!empty($result['Payments'][0]['Status']) && $result['Payments'][0]['Status'] === 'CONFIRMED')) {
                 $this->catalogOrderService->update($order, ['system' => 'Заказ оплачен']);
                 $this->container->get(\App\Application\PubSub::class)->publish('plugin:order:payment', $order);
             } else {
