@@ -3,6 +3,7 @@
 namespace Plugin\TinkoffPayment\Actions;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 
 class ErrorAction extends CatalogAction
 {
@@ -13,12 +14,14 @@ class ErrorAction extends CatalogAction
         ];
         $data = array_merge($default, $this->request->getQueryParams());
 
-        $order = $this->catalogOrderService->read(['serial' => $data['serial']]);
+        try {
+            $order = $this->catalogOrderService->read(['serial' => $data['serial']]);
 
-        if ($order) {
-            $this->catalogOrderService->update($order, ['system' => 'Заказ не был оплачен']);
-
-            return $this->respondWithRedirect('/cart/done/' . $order->getUuid()->toString());
+            if ($order) {
+                return $this->respondWithRedirect('/cart/done/' . $order->uuid);
+            }
+        } catch (OrderNotFoundException $e) {
+            // nothing
         }
 
         return $this->respondWithRedirect('/');

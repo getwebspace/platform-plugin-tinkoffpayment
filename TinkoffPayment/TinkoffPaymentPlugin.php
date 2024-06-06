@@ -14,7 +14,7 @@ class TinkoffPaymentPlugin extends AbstractPaymentPlugin
     const NAME = 'TinkoffPaymentPlugin';
     const TITLE = 'TinkoffPayment';
     const DESCRIPTION = 'Возможность принимать безналичную оплату товаров и услуг';
-    const VERSION = '1.0.2';
+    const VERSION = '2.0.0';
 
     public function __construct(ContainerInterface $container)
     {
